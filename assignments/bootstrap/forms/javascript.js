@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   addMovieModal.addEventListener('hidden.bs.modal', () => {
     form.classList.remove('was-validated');
+    form.reset();
   });
 
   addMovieModal.addEventListener('shown.bs.modal', () => {
@@ -13,27 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const movieScore = document.getElementById('movie-score');
   movieScore.onchange = () => {
-    let helperText;
-    switch(movieScore.value) {
-      case '1':
-        helperText = 'Horrible';
-        break;
-      case '2':
-        helperText = 'Bad';
-        break;
-      case '3':
-        helperText = 'Okay';
-        break;
-      case '4':
-        helperText = 'Good';
-        break;
-      case '5':
-        helperText = 'Excellent';
-        break;
-    }
-
     const movieScoreHelper = document.getElementById('movie-score-helper');
-    movieScoreHelper.innerHTML = helperText;
+    movieScoreHelper.innerHTML = getScoreHelperText(movieScore.value);
   }
 
   form.onsubmit = (event) => {
@@ -48,15 +30,62 @@ document.addEventListener('DOMContentLoaded', function() {
       const movieHtml =
         `<td>${document.getElementById('movie-title').value}</td>` +
         `<td>${document.getElementById('movie-genre').value}</td>` +
-        `<td>${document.getElementById('movie-score').value}</td>`;
+        `<td>${formatScore(document.getElementById('movie-score').value)}</td>`;
 
       movieTr.innerHTML = movieHtml;
-      document.getElementById('movies-body').appendChild(movieTr);
+      document.getElementById('movies-body').prepend(movieTr);
 
-      const modal = bootstrap.Modal.getInstance(document.getElementById('add-movie-modal'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('add-movie-modal')).hide();
     }
 
     form.classList.add('was-validated');
   }
 });
+
+const getScoreHelperText = (scoreValue) => {
+  let helperText;
+
+  switch(scoreValue) {
+    case '1':
+      helperText = 'Horrible';
+      break;
+    case '2':
+      helperText = 'Bad';
+      break;
+    case '3':
+      helperText = 'Okay';
+      break;
+    case '4':
+      helperText = 'Good';
+      break;
+    case '5':
+      helperText = 'Excellent';
+      break;
+  }
+
+  return helperText;
+}
+
+const formatScore = (scoreValue) => {
+  let helperText;
+
+  switch(scoreValue) {
+    case '1':
+      helperText = '1/5 - Horrible';
+      break;
+    case '2':
+      helperText = '2/5 - Bad';
+      break;
+    case '3':
+      helperText = '3/5 - Okay';
+      break;
+    case '4':
+      helperText = '4/5 - Good';
+      break;
+    case '5':
+      helperText = '5/5 - Excellent';
+      break;
+  }
+
+  return helperText;
+}
